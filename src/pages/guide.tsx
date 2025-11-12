@@ -57,7 +57,7 @@ export default function GuidePage() {
             <div className="space-y-2">
               <h4 className="font-semibold">セットアップコマンド</h4>
               <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                <div>git clone [このリポジトリURL]</div>
+                <div>git clone https://github.com/geekfujiwara/CodeAppsStarter.git</div>
                 <div>cd CodeAppsStarter</div>
                 <div>npm install</div>
                 <div>npm run dev</div>
