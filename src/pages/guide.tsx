@@ -7,7 +7,14 @@ import { toast } from "sonner"
 
 export default function GuidePage() {
   const [copied, setCopied] = useState(false)
+  const [copiedSetup, setCopiedSetup] = useState(false)
+  const [copiedDeploy, setCopiedDeploy] = useState(false)
   const developmentStandardUrl = "https://github.com/geekfujiwara/CodeAppsDevelopmentStandard"
+  const setupCommands = `git clone https://github.com/geekfujiwara/CodeAppsStarter.git
+cd CodeAppsStarter
+npm install
+npm run dev`
+  const deployCommand = "pac code init --environment <環境ID> --displayname <アプリ名>"
 
   const copyToClipboard = async () => {
     try {
@@ -15,6 +22,28 @@ export default function GuidePage() {
       setCopied(true)
       toast.success("URLをクリップボードにコピーしました！")
       setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      toast.error("クリップボードへのコピーに失敗しました")
+    }
+  }
+
+  const copySetupCommands = async () => {
+    try {
+      await navigator.clipboard.writeText(setupCommands)
+      setCopiedSetup(true)
+      toast.success("セットアップコマンドをコピーしました！")
+      setTimeout(() => setCopiedSetup(false), 2000)
+    } catch (err) {
+      toast.error("クリップボードへのコピーに失敗しました")
+    }
+  }
+
+  const copyDeployCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(deployCommand)
+      setCopiedDeploy(true)
+      toast.success("デプロイコマンドをコピーしました！")
+      setTimeout(() => setCopiedDeploy(false), 2000)
     } catch (err) {
       toast.error("クリップボードへのコピーに失敗しました")
     }
@@ -44,7 +73,7 @@ export default function GuidePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-4">
             <div className="space-y-2">
               <h4 className="font-semibold">必要なツール</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
@@ -55,12 +84,32 @@ export default function GuidePage() {
               </ul>
             </div>
             <div className="space-y-2">
-              <h4 className="font-semibold">セットアップコマンド</h4>
-              <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                <div>git clone https://github.com/geekfujiwara/CodeAppsStarter.git</div>
-                <div>cd CodeAppsStarter</div>
-                <div>npm install</div>
-                <div>npm run dev</div>
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold">セットアップコマンド</h4>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copySetupCommands}
+                  className="shrink-0"
+                >
+                  {copiedSetup ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      コピー済み
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-2" />
+                      コピー
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="bg-muted p-3 rounded-md font-mono text-xs sm:text-sm overflow-x-auto">
+                <div className="whitespace-nowrap">git clone https://github.com/geekfujiwara/CodeAppsStarter.git</div>
+                <div className="whitespace-nowrap">cd CodeAppsStarter</div>
+                <div className="whitespace-nowrap">npm install</div>
+                <div className="whitespace-nowrap">npm run dev</div>
               </div>
             </div>
           </div>
@@ -80,10 +129,30 @@ export default function GuidePage() {
             <p className="text-sm text-muted-foreground">
               Power Apps コードアプリとして展開する準備を行います。
             </p>
-            <div className="bg-muted p-4 rounded-md">
-              <h4 className="font-semibold mb-2 text-sm">コマンド</h4>
-              <div className="font-mono text-sm bg-background p-3 rounded border">
-                pac code init --environment &lt;環境ID&gt; --displayname &lt;アプリ名&gt;
+            <div className="bg-muted p-4 rounded-md space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold text-sm">コマンド</h4>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyDeployCommand}
+                  className="shrink-0"
+                >
+                  {copiedDeploy ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      コピー済み
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-2" />
+                      コピー
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="font-mono text-xs sm:text-sm bg-background p-3 rounded border overflow-x-auto">
+                <div className="whitespace-nowrap">pac code init --environment &lt;環境ID&gt; --displayname &lt;アプリ名&gt;</div>
               </div>
             </div>
             <div className="space-y-2">
