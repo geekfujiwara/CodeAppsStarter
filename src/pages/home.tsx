@@ -57,7 +57,7 @@ export default function HomePage() {
             className="transition-transform hover:scale-105"
           >
             <img
-              src="/geekfujiwara.svg"
+              src="/geekkumanomi.svg"
               className="h-24 w-24"
               alt="Geek開発標準"
             />
