@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Combobox } from "@/components/ui/combobox"
@@ -433,32 +433,6 @@ export function GanttChart() {
     return belongsToProject && matchesSearch && matchesStatus && matchesAssignee
   })
 
-  // タスクの期間から最適な縮尺を自動選択
-  const autoSelectTimeScale = () => {
-    if (filteredTasks.length === 0) {
-      setTimeScale("3months")
-      return
-    }
-
-    const allDates = filteredTasks.flatMap((t) => [t.startDate, t.endDate])
-    const taskMinDate = new Date(Math.min(...allDates.map((d) => d.getTime())))
-    const taskMaxDate = new Date(Math.max(...allDates.map((d) => d.getTime())))
-    
-    // 期間を日数で計算
-    const daysDiff = Math.ceil((taskMaxDate.getTime() - taskMinDate.getTime()) / (1000 * 60 * 60 * 24))
-    
-    // 期間に応じて最適な縮尺を選択
-    if (daysDiff <= 35) {
-      setTimeScale("1month")
-    } else if (daysDiff <= 100) {
-      setTimeScale("3months")
-    } else if (daysDiff <= 200) {
-      setTimeScale("6months")
-    } else {
-      setTimeScale("1year")
-    }
-  }
-
   // 縮尺に応じて表示期間を計算
   const today = new Date()
   let minDate: Date
@@ -520,11 +494,17 @@ export function GanttChart() {
   }
   
   // 週の開始を月曜日に調整
-  const adjustedMinDate = new Date(minDate)
-  adjustedMinDate.setDate(minDate.getDate() - ((minDate.getDay() + 6) % 7))
+  const adjustedMinDate = useMemo(() => {
+    const date = new Date(minDate)
+    date.setDate(minDate.getDate() - ((minDate.getDay() + 6) % 7))
+    return date
+  }, [minDate])
   
-  const adjustedMaxDate = new Date(maxDate)
-  adjustedMaxDate.setDate(maxDate.getDate() + (7 - ((maxDate.getDay() + 6) % 7)) % 7)
+  const adjustedMaxDate = useMemo(() => {
+    const date = new Date(maxDate)
+    date.setDate(maxDate.getDate() + (7 - ((maxDate.getDay() + 6) % 7)) % 7)
+    return date
+  }, [maxDate])
   
   const totalDays = Math.ceil((adjustedMaxDate.getTime() - adjustedMinDate.getTime()) / (1000 * 60 * 60 * 24))
 
