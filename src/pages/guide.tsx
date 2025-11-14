@@ -31,7 +31,7 @@ export default function GuidePage() {
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="p-3 bg-primary/10 rounded-full">
-            <img src="/geekkumanomi.svg" className="h-8 w-8" alt="Geek" />
+            <img src="./geekkumanomi.svg" className="h-8 w-8" alt="Geek" />
           </div>
         </div>
         <h1 className="text-4xl font-bold mb-4">このテンプレートの使い方</h1>
@@ -188,15 +188,14 @@ export default function GuidePage() {
                 ローカル環境での実行
               </h4>
               <p className="text-sm text-muted-foreground">
-                Code Apps CLI を使用してアプリをビルドし、ローカル環境で起動して動作確認を行います。
+                開発サーバーを起動して、ローカル環境でアプリの動作確認を行います。Power Apps からローカルアプリを実行できます。
               </p>
-              <CodeBlock code={`npm run build`} />
-              <CodeBlock code={`npm run dev | pac code run && vite`} />
+              <CodeBlock code={`npm run dev`} />
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">動作確認</h5>
                 <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-                  <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">npm run build</code> でアプリをビルド</li>
-                  <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">pac code run</code> でローカルサーバーを起動</li>
+                  <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">npm run dev</code> で開発サーバーを起動</li>
+                  <li>• Power Apps からローカルで実行中のアプリに接続</li>
                   <li>• ブラウザで自動的に開かれるアプリの動作を確認</li>
                   <li>• すべての機能が正常に動作することを確認</li>
                 </ul>
@@ -210,11 +209,26 @@ export default function GuidePage() {
                 Power Apps 環境へのデプロイ
               </h4>
               <p className="text-sm text-muted-foreground">
-                ローカルでの動作確認が完了したら、Power Apps 環境にアプリをデプロイします。
+                ローカルでの動作確認が完了したら、アプリをビルドして Power Apps 環境にデプロイします。
               </p>
               
+              {/* ビルド */}
+              <div className="space-y-2">
+                <h5 className="font-semibold text-sm">1. アプリのビルド</h5>
+                <CodeBlock code={`npm run build`} />
+                <p className="text-sm text-muted-foreground ml-4">
+                  本番環境用に最適化されたアプリをビルドします。
+                </p>
+              </div>
+
               {/* デプロイの実行 */}
-              <CodeBlock code="pac code push" />
+              <div className="space-y-2">
+                <h5 className="font-semibold text-sm">2. デプロイの実行</h5>
+                <CodeBlock code={`pac code push`} />
+                <p className="text-sm text-muted-foreground ml-4">
+                  ビルドしたアプリを Power Apps 環境にプッシュします。
+                </p>
+              </div>
 
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">デプロイ後の確認</h5>

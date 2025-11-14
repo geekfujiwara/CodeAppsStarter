@@ -74,7 +74,7 @@ function LayoutContent({ showHeader = true }: LayoutProps) {
                 )}
                 className="hover:bg-accent"
               >
-                <img src="/geekkumanomi.svg" className="h-6 w-6" alt="通知" />
+                <img src="./geekkumanomi.svg" className="h-6 w-6" alt="通知" />
               </Button>
 
               <ModeToggle />

@@ -50,7 +50,7 @@ export default function HomePage() {
             )}
             className="transition-transform hover:scale-105"
           >
-            <img src="/geekkumanomi.svg" className="h-32 w-32" alt="Geek開発標準" />
+            <img src="./geekkumanomi.svg" className="h-32 w-32" alt="Geek開発標準" />
           </button>
         </div>
 
