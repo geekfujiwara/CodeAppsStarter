@@ -188,14 +188,13 @@ export default function GuidePage() {
                 ローカル環境での実行
               </h4>
               <p className="text-sm text-muted-foreground">
-                開発サーバーを起動して、ローカル環境でアプリの動作確認を行います。Power Apps からローカルアプリを実行できます。
+                開発サーバーを起動してローカル環境で動作確認を行います。
               </p>
               <CodeBlock code={`npm run dev`} />
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">動作確認</h5>
                 <ul className="text-sm text-muted-foreground space-y-1 ml-4">
                   <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">npm run dev</code> で開発サーバーを起動</li>
-                  <li>• Power Apps からローカルで実行中のアプリに接続</li>
                   <li>• ブラウザで自動的に開かれるアプリの動作を確認</li>
                   <li>• すべての機能が正常に動作することを確認</li>
                 </ul>
@@ -212,23 +211,8 @@ export default function GuidePage() {
                 ローカルでの動作確認が完了したら、アプリをビルドして Power Apps 環境にデプロイします。
               </p>
               
-              {/* ビルド */}
-              <div className="space-y-2">
-                <h5 className="font-semibold text-sm">1. アプリのビルド</h5>
-                <CodeBlock code={`npm run build`} />
-                <p className="text-sm text-muted-foreground ml-4">
-                  本番環境用に最適化されたアプリをビルドします。
-                </p>
-              </div>
-
               {/* デプロイの実行 */}
-              <div className="space-y-2">
-                <h5 className="font-semibold text-sm">2. デプロイの実行</h5>
-                <CodeBlock code={`pac code push`} />
-                <p className="text-sm text-muted-foreground ml-4">
-                  ビルドしたアプリを Power Apps 環境にプッシュします。
-                </p>
-              </div>
+              <CodeBlock code={`npm run build\npac code push`} />
 
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">デプロイ後の確認</h5>
@@ -321,11 +305,11 @@ export default function GuidePage() {
                     <span className="text-sm font-bold text-primary">2</span>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold mb-1">ビルドとローカル実行で確認</h4>
+                    <h4 className="font-semibold mb-1">ローカル実行で確認</h4>
                     <p className="text-sm text-muted-foreground mb-2">
-                      開発したコードをビルドし、ローカル環境で動作確認を行います
+                      開発したコードをローカル環境で動作確認を行います
                     </p>
-                    <CodeBlock code={`npm run build\npac code run`} />
+                    <CodeBlock code={`npm run dev`} />
                   </div>
                 </div>
 
@@ -348,9 +332,9 @@ export default function GuidePage() {
                   <div className="flex-1">
                     <h4 className="font-semibold mb-1">Power Apps にデプロイ</h4>
                     <p className="text-sm text-muted-foreground mb-2">
-                      完成したアプリを Power Apps 環境にデプロイします
+                      完成したアプリをビルドして Power Apps 環境にデプロイします
                     </p>
-                    <CodeBlock code="pac code push" />
+                    <CodeBlock code={`npm run build\npac code push`} />
                   </div>
                 </div>
               </div>

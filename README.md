@@ -86,7 +86,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで `http://localhost:5173` を開いて確認してください。
+ブラウザで自動的に開かれるアプリの動作を確認してください。
 
 ---
 
@@ -135,13 +135,24 @@ npm run dev
 
 ---
 
-## Power Apps へのデプロイ
+## 開発ワークフロー
+
+### ローカル開発
 
 ```bash
-# Power Apps 環境にアプリを初期化
+# 開発サーバーを起動してローカルで動作確認
+npm run dev
+```
+
+### Power Apps へのデプロイ
+
+ローカルでの動作確認が完了したら、アプリをビルドして Power Apps 環境にデプロイします。
+
+```bash
+# Power Apps 環境にアプリを初期化 (初回のみ)
 pac code init --environment <環境ID> --displayname <アプリ名>
 
-# ビルド
+# アプリをビルド
 npm run build
 
 # Power Apps にデプロイ
