@@ -177,7 +177,34 @@ export function ChartDashboard() {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
-                  label={(entry) => `${entry.level}: ${entry.count}`}
+                  innerRadius={40}
+                  label={({
+                    cx,
+                    cy,
+                    midAngle,
+                    innerRadius,
+                    outerRadius,
+                    level,
+                  }) => {
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+                    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180)
+                    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180)
+                    
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill="white"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize={12}
+                        fontWeight="bold"
+                      >
+                        {`${level}`}
+                      </text>
+                    )
+                  }}
+                  labelLine={false}
                 >
                   {chartData.levelData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />

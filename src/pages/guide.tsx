@@ -190,11 +190,12 @@ export default function GuidePage() {
               <p className="text-sm text-muted-foreground">
                 Code Apps CLI を使用してアプリをビルドし、ローカル環境で起動して動作確認を行います。
               </p>
-              <CodeBlock code={`pac code build\npac code run`} />
+              <CodeBlock code={`npm run build`} />
+              <CodeBlock code={`pac code run`} />
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">動作確認</h5>
                 <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-                  <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">pac code build</code> でアプリをビルド</li>
+                  <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">npm run build</code> でアプリをビルド</li>
                   <li>• <code className="bg-muted px-1.5 py-0.5 rounded text-xs">pac code run</code> でローカルサーバーを起動</li>
                   <li>• ブラウザで自動的に開かれるアプリの動作を確認</li>
                   <li>• すべての機能が正常に動作することを確認</li>

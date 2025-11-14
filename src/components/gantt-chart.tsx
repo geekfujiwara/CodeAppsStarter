@@ -228,7 +228,7 @@ function SortableItem({ id, children }: SortableItemProps) {
 
 export function GanttChart() {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("p1")
-  const [timeScale, setTimeScale] = useState<"list" | "1month" | "3months" | "months" | "6months" | "1year">("list")
+  const [timeScale, setTimeScale] = useState<"list" | "1month" | "3months" | "months" | "6months" | "1year">("1month")
   const [leftPanelWidth, setLeftPanelWidth] = useState<number>(400) // ガント表示時の左側パネル幅
   const [isResizing, setIsResizing] = useState<boolean>(false)
   const [startX, setStartX] = useState<number>(0)
@@ -1123,7 +1123,7 @@ export function GanttChart() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">表示単位:</label>
+                <label className="text-sm font-medium">表示モード:</label>
                 <div className="flex gap-1">
                   <Button
                     variant={timeScale === "list" ? "default" : "outline"}
