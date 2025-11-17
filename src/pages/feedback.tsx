@@ -1,28 +1,69 @@
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Heart, MessageSquare, Bug, Lightbulb, Sparkles, BookOpen, AlertTriangle, ThumbsUp } from "lucide-react"
+import { ExternalLink, Heart, MessageSquare, Bug, Lightbulb, Sparkles, BookOpen, AlertTriangle, ThumbsUp, List, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
 export default function FeedbackPage() {
+  const [isTocOpen, setIsTocOpen] = useState(true)
+  
   const handleOpenIssue = () => {
     const url = "https://github.com/geekfujiwara/CodeAppsDevelopmentStandard/issues/new"
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
   return (
-    <div className="container mx-auto py-8 px-6 max-w-5xl space-y-8">
-      <div className="space-y-4 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <Heart className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tight">フィードバック</h1>
+    <div className="container mx-auto py-8 px-6">
+      {/* ヘッダーセクション - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 mb-8 ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 左側空白（目次用スペース確保） */}
+        <div className="hidden lg:block"></div>
+        
+        {/* タイトルコンテンツ */}
+        <div className="space-y-4 text-center lg:text-left">
+          <div className="flex items-center justify-center lg:justify-start gap-2">
+            <Heart className="h-8 w-8 text-primary" />
+            <h1 className="text-4xl font-bold tracking-tight">フィードバック</h1>
+          </div>
+          <p className="text-lg text-muted-foreground">
+            Geek は継続的にテンプレートと開発標準を改善しています。
+            皆様からのフィードバックは、このテンプレートをより良いものにするために非常に価値があります。
+          </p>
         </div>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Geek は継続的にテンプレートと開発標準を改善しています。
-          皆様からのフィードバックは、このテンプレートをより良いものにするために非常に価値があります。
-        </p>
       </div>
 
-      <Card className="border-primary/20">
+      {/* メインコンテンツ - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 目次サイドバー */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+            <button
+              onClick={() => setIsTocOpen(!isTocOpen)}
+              className={`flex items-center gap-2 font-semibold hover:text-primary transition-colors ${isTocOpen ? 'text-lg mb-4' : 'p-1 mb-2'}`}
+              title={isTocOpen ? '目次を閉じる' : '目次を開く'}
+            >
+              {isTocOpen ? <X className="h-5 w-5" /> : <List className="h-5 w-5" />}
+              {isTocOpen && '目次'}
+            </button>
+            {isTocOpen && (
+              <nav className="space-y-2">
+                <a href="#importance" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  フィードバックの重要性
+                </a>
+                <a href="#types" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  フィードバックのタイプ
+                </a>
+                <a href="#submit" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  フィードバック送信方法
+                </a>
+              </nav>
+            )}
+          </div>
+        </aside>
+
+        {/* メインコンテンツ */}
+        <main className="space-y-8">
+      <Card className="border-primary/20" id="importance">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -45,7 +86,7 @@ export default function FeedbackPage() {
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
+      <div className="space-y-4" id="types">
         <h2 className="text-2xl font-bold">フィードバックのタイプ</h2>
         <p className="text-muted-foreground">
           以下のようなフィードバックをお待ちしています。該当するタイプを参考に、GitHub Issuesでお知らせください。
@@ -246,7 +287,7 @@ export default function FeedbackPage() {
         </Card>
       </div>
 
-      <Card className="bg-primary/5 border-primary/20">
+      <Card className="bg-primary/5 border-primary/20" id="submit">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ExternalLink className="h-5 w-5" />
@@ -327,6 +368,8 @@ export default function FeedbackPage() {
           </div>
         </CardContent>
       </Card>
+        </main>
+      </div>
     </div>
   )
 }

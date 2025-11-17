@@ -179,4 +179,19 @@
   a[disabled], button[disabled], [aria-disabled="true"] {
     cursor: not-allowed;
   }
+  
+  /* スクロールバーを非表示にする */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
+  
+  /* アンカーリンクのスクロール位置調整（ヘッダーの高さ分） */
+  [id] {
+    scroll-margin-top: 6rem; /* ヘッダー高さ (64px) + 余白 (32px) = 96px = 6rem */
+  }
 }

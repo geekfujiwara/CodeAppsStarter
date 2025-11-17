@@ -12,9 +12,10 @@ interface Column {
 interface KanbanColumnProps {
   column: Column
   tasks: KanbanTask[]
+  onTaskClick?: (task: KanbanTask) => void
 }
 
-export function KanbanColumn({ column, tasks }: KanbanColumnProps) {
+export function KanbanColumn({ column, tasks, onTaskClick }: KanbanColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   })
@@ -37,7 +38,11 @@ export function KanbanColumn({ column, tasks }: KanbanColumnProps) {
       <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
         <div className="space-y-3 flex-1">
           {tasks.map((task) => (
-            <KanbanTaskCard key={task.id} task={task} />
+            <KanbanTaskCard 
+              key={task.id} 
+              task={task} 
+              onClick={() => onTaskClick?.(task)}
+            />
           ))}
         </div>
       </SortableContext>

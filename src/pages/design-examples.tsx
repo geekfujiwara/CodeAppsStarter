@@ -13,7 +13,7 @@ import { TaskPriorityList } from "@/components/task-priority-list"
 import { GanttChart } from "@/components/gantt-chart"
 import { KanbanBoard } from "@/components/kanban-board"
 import { ChartDashboard } from "@/components/chart-dashboard"
-import { AlertCircle, BookOpen, Clock, ExternalLink, Layers, RefreshCw, Target } from "lucide-react"
+import { AlertCircle, BookOpen, Clock, ExternalLink, Layers, RefreshCw, Target, List, X } from "lucide-react"
 import type { LearnAuxiliaryItem } from "@/lib/learn-client"
 
 const ITEMS_PER_PAGE = 9
@@ -71,6 +71,7 @@ export default function DesignShowcasePage() {
   const [productFilter, setProductFilter] = useState("all")
   const [levelFilter, setLevelFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
+  const [isTocOpen, setIsTocOpen] = useState(true)
 
   const modules = useMemo(() => data?.modules ?? [], [data?.modules])
   const certifications = useMemo(() => data?.certifications ?? [], [data?.certifications])
@@ -185,22 +186,65 @@ export default function DesignShowcasePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">ギャラリー&フィルター実装サンプル</h1>
-          <p className="text-sm text-muted-foreground sm:text-base">
-            Learn API データを活用したギャラリー表示、検索、フィルタリング、ページネーションの実装例です。開発のテンプレートとしてご利用いただけます。
-          </p>
-        </div>
-        <Button variant="outline" onClick={() => refetch()} className="w-full gap-2 sm:w-auto">
-          <RefreshCw className="h-4 w-4" />
-          最新情報を取得
-        </Button>
-      </header>
+    <div className="w-full max-w-full px-4 pb-8 pt-6">
+      {/* ヘッダーセクション - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 mb-8 w-full max-w-full ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 左側空白（目次用スペース確保） */}
+        <div className="hidden lg:block"></div>
+        
+        {/* ヘッダーコンテンツ */}
+        <header className="min-w-0 w-full">
+          <div className="space-y-1 min-w-0">
+            <h1 className="text-2xl font-bold text-foreground sm:text-3xl">実装サンプル</h1>
+            <p className="text-sm text-muted-foreground sm:text-base">
+              デザインテンプレート集です。ギャラリー表示、検索、フィルタリング、ページネーションやカンバンビュー、ガントチャート、フォームの実装例です。開発のテンプレートとしてご利用いただけます。
+            </p>
+          </div>
+        </header>
+      </div>
 
+      {/* メインコンテンツ - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 w-full max-w-full ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 目次サイドバー */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+            <button
+              onClick={() => setIsTocOpen(!isTocOpen)}
+              className={`flex items-center gap-2 font-semibold hover:text-primary transition-colors ${isTocOpen ? 'text-lg mb-4' : 'p-1 mb-2'}`}
+              title={isTocOpen ? '目次を閉じる' : '目次を開く'}
+            >
+              {isTocOpen ? <X className="h-5 w-5" /> : <List className="h-5 w-5" />}
+              {isTocOpen && '目次'}
+            </button>
+            {isTocOpen && (
+              <nav className="space-y-2">
+                <a href="#dashboard" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  データ可視化ダッシュボード
+                </a>
+                <a href="#stats" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  統計カード
+                </a>
+                <a href="#gallery" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  ギャラリー
+                </a>
+                <a href="#priority" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  優先順位管理
+                </a>
+                <a href="#kanban" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  カンバンボード
+                </a>
+                <a href="#gantt" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  ガントチャート
+                </a>
+              </nav>
+            )}
+          </div>
+        </aside>
+
+        {/* メインコンテンツ */}
+        <main className="space-y-8 min-w-0">
       {/* デザインテンプレート: グラフダッシュボード */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="dashboard">
         <div className="space-y-2">
           <h2 className="text-xl font-semibold text-foreground">📈 データ可視化ダッシュボード</h2>
           <p className="text-sm text-muted-foreground">
@@ -229,7 +273,7 @@ export default function DesignShowcasePage() {
       <ChartDashboard />
 
       {/* デザインテンプレート: 統計カード */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="stats">
         <div className="space-y-2">
           <h2 className="text-xl font-semibold text-foreground">📊 統計カード</h2>
           <p className="text-sm text-muted-foreground">
@@ -299,13 +343,13 @@ export default function DesignShowcasePage() {
         </Card>
       </section>
 
-      {/* デザインテンプレート: 認定資格カード */}
+      {/* デザインテンプレート: カード */}
       {!isLoading && featuredCertifications.length > 0 && (
         <div className="space-y-3">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-foreground">🎓 認定資格カード</h2>
+            <h2 className="text-xl font-semibold text-foreground">🎓 カード</h2>
             <p className="text-sm text-muted-foreground">
-              認定資格情報をカード形式で表示し、詳細ページへのリンクを提供
+              情報をカード形式で表示し、詳細ページへのリンクを提供
             </p>
             <details className="text-sm">
               <summary className="cursor-pointer font-medium text-primary hover:underline">
@@ -452,9 +496,9 @@ export default function DesignShowcasePage() {
 
       {/* デザインテンプレート: ギャラリー表示 */}
       {!isLoading && !isError && filteredModules.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-3" id="gallery">
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-foreground">🎨 モジュールギャラリー</h2>
+            <h2 className="text-xl font-semibold text-foreground">🎨 ギャラリー</h2>
             <p className="text-sm text-muted-foreground">
               カード形式のギャラリー表示とページネーション機能
             </p>
@@ -623,9 +667,9 @@ export default function DesignShowcasePage() {
       )}
 
       {/* デザインテンプレート: ドラッグ&ドロップ タスク管理 */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="priority">
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold text-foreground">🎯 タスク優先順位管理</h2>
+          <h2 className="text-xl font-semibold text-foreground">🎯 優先順位管理</h2>
           <p className="text-sm text-muted-foreground">
             ドラッグ&ドロップでタスクの並び順を変更できるインタラクティブなリスト
           </p>
@@ -652,7 +696,7 @@ export default function DesignShowcasePage() {
       <TaskPriorityList />
 
       {/* デザインテンプレート: カンバンボード */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="kanban">
         <div className="space-y-2">
           <h2 className="text-xl font-semibold text-foreground">📋 カンバンボード</h2>
           <p className="text-sm text-muted-foreground">
@@ -681,7 +725,7 @@ export default function DesignShowcasePage() {
       <KanbanBoard />
 
       {/* デザインテンプレート: ガントチャート */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="gantt">
         <div className="space-y-2">
           <h2 className="text-xl font-semibold text-foreground">📅 ガントチャート</h2>
           <p className="text-sm text-muted-foreground">
@@ -708,6 +752,9 @@ export default function DesignShowcasePage() {
       </div>
 
       <GanttChart />
+
+      </main>
+      </div>
 
       <LinkConfirmModal
         isOpen={modalData.isOpen}

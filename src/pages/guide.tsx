@@ -2,13 +2,14 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Copy, CheckCircle, Github, ExternalLink, Lightbulb } from "lucide-react"
+import { Copy, CheckCircle, Github, ExternalLink, Lightbulb, List, X } from "lucide-react"
 import { toast } from "sonner"
 import { LinkConfirmModal, useLinkModal } from "@/components/link-confirm-modal"
 import { CodeBlock } from "@/components/code-block"
 
 export default function GuidePage() {
   const [copied, setCopied] = useState(false)
+  const [isTocOpen, setIsTocOpen] = useState(true)
   const { modalData, openModal, closeModal } = useLinkModal()
   const developmentStandardUrl = "https://github.com/geekfujiwara/CodeAppsDevelopmentStandard"
   const copilotMessageTemplate = `${developmentStandardUrl} に基づいて、<アイディア>を実現してください`
@@ -26,22 +27,62 @@ export default function GuidePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* ヘッダーセクション */}
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="p-3 bg-primary/10 rounded-full">
-            <img src="./geekkumanomi.svg" className="h-8 w-8" alt="Geek" />
+    <div className="container mx-auto px-4 py-8">
+      {/* ヘッダーセクション - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 mb-8 ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 左側空白（目次用スペース確保） */}
+        <div className="hidden lg:block"></div>
+        
+        {/* タイトルコンテンツ */}
+        <div className="text-center lg:text-left">
+          <div className="flex justify-center lg:justify-start mb-4">
+            <div className="p-3 bg-primary/10 rounded-full">
+              <img src="./geekkumanomi.svg" className="h-8 w-8" alt="Geek" />
+            </div>
           </div>
+          <h1 className="text-4xl font-bold mb-4">このテンプレートの使い方</h1>
+          <p className="text-xl text-muted-foreground">
+            GitHub Copilot を使用して効率的な Power Apps コードアプリ開発を始めよう
+          </p>
         </div>
-        <h1 className="text-4xl font-bold mb-4">このテンプレートの使い方</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          GitHub Copilot を使用して効率的な Power Apps コードアプリ開発を始めよう
-        </p>
       </div>
 
+      {/* メインコンテンツ - グリッドレイアウト */}
+      <div className={`grid grid-cols-1 gap-8 ${isTocOpen ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-[32px_1fr]'}`}>
+        {/* 目次サイドバー */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+            <button
+              onClick={() => setIsTocOpen(!isTocOpen)}
+              className={`flex items-center gap-2 font-semibold hover:text-primary transition-colors ${isTocOpen ? 'text-lg mb-4' : 'p-1 mb-2'}`}
+              title={isTocOpen ? '目次を閉じる' : '目次を開く'}
+            >
+              {isTocOpen ? <X className="h-5 w-5" /> : <List className="h-5 w-5" />}
+              {isTocOpen && '目次'}
+            </button>
+            {isTocOpen && (
+              <nav className="space-y-2">
+                <a href="#setup" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  1. 開発環境のセットアップ
+                </a>
+                <a href="#deploy" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  2. Power Apps へのデプロイ準備
+                </a>
+                <a href="#standards" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  3. 開発標準の活用方法
+                </a>
+                <a href="#references" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  参考リンク
+                </a>
+              </nav>
+            )}
+          </div>
+        </aside>
+
+        {/* メインコンテンツ */}
+        <main>
       {/* 開始手順 */}
-      <Card className="mb-8">
+      <Card className="mb-8" id="setup">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</span>
@@ -137,7 +178,7 @@ export default function GuidePage() {
       </Card>
 
       {/* Power Apps へのデプロイ準備 */}
-      <Card className="mb-8">
+      <Card className="mb-8" id="deploy">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</span>
@@ -228,7 +269,7 @@ export default function GuidePage() {
       </Card>
 
       {/* 開発標準の活用 */}
-      <Card className="mb-8">
+      <Card className="mb-8" id="standards">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</span>
@@ -433,7 +474,7 @@ export default function GuidePage() {
       </Card>
 
   {/* 参考リンク */}
-  <Card id="feedback">
+  <Card id="references">
         <CardHeader>
           <CardTitle>参考リンク</CardTitle>
         </CardHeader>
@@ -480,6 +521,8 @@ export default function GuidePage() {
         title={modalData.title}
         description={modalData.description}
       />
+        </main>
+      </div>
     </div>
   )
 }

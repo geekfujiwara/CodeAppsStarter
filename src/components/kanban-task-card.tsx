@@ -7,9 +7,10 @@ import type { KanbanTask } from "@/components/kanban-board"
 interface KanbanTaskCardProps {
   task: KanbanTask
   isDragging?: boolean
+  onClick?: () => void
 }
 
-export function KanbanTaskCard({ task, isDragging = false }: KanbanTaskCardProps) {
+export function KanbanTaskCard({ task, isDragging = false, onClick }: KanbanTaskCardProps) {
   const {
     attributes,
     listeners,
@@ -42,13 +43,15 @@ export function KanbanTaskCard({ task, isDragging = false }: KanbanTaskCardProps
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-card border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+      className="bg-card border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      onClick={onClick}
     >
       <div className="flex items-start gap-3">
         <button
           {...attributes}
           {...listeners}
           className="cursor-grab active:cursor-grabbing touch-none mt-1"
+          onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </button>
