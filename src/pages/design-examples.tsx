@@ -2,6 +2,9 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { CodeBlock } from "@/components/code-block"
 import { useLearnCatalog } from "@/hooks/use-learn-catalog"
 import { LinkConfirmModal, useLinkModal } from "@/components/link-confirm-modal"
@@ -12,6 +15,12 @@ import { KanbanBoard } from "@/components/kanban-board"
 import { ChartDashboard } from "@/components/chart-dashboard"
 import { StatsCards, SearchFilterGallery } from "@/components/gallery-components"
 import type { GalleryItem, FilterConfig } from "@/components/search-filter-gallery"
+import { ListTable } from "@/components/list-table"
+import type { TableColumn } from "@/components/list-table"
+import { InlineEditTable } from "@/components/inline-edit-table"
+import type { EditableColumn } from "@/components/inline-edit-table"
+import { FormSection, FormColumns } from "@/components/form-modal"
+import { renderPriorityBadge, renderStatusBadge } from "@/lib/table-utils"
 import { getBadgeColorClass, flattenItems } from "@/lib/gallery-utils"
 import { AlertCircle, BookOpen, Clock, Layers, RefreshCw, Target, List, X } from "lucide-react"
 
@@ -23,6 +32,235 @@ export default function DesignShowcasePage() {
   const { modalData, openModal, closeModal } = useLinkModal()
 
   const [isTocOpen, setIsTocOpen] = useState(true)
+
+  // サンプルタスクデータ
+  const [sampleTasks, setSampleTasks] = useState([
+    { id: 1, title: "ユーザー認証機能の実装", description: "OAuth2.0を使用した認証システムの構築", priority: "high", status: "進行中", category: "開発", assignee: "田中太郎", dueDate: "2025-12-01" },
+    { id: 2, title: "APIドキュメントの作成", description: "RESTful APIの仕様書を作成", priority: "medium", status: "未着手", category: "ドキュメント", assignee: "佐藤花子", dueDate: "2025-12-15" },
+    { id: 3, title: "UIデザインのレビュー", description: "新しいダッシュボードデザインの確認", priority: "high", status: "完了", category: "デザイン", assignee: "鈴木一郎", dueDate: "2025-11-20" },
+    { id: 4, title: "単体テストの作成", description: "認証機能の単体テストを実装", priority: "medium", status: "進行中", category: "テスト", assignee: "田中太郎", dueDate: "2025-12-05" },
+    { id: 5, title: "パフォーマンス改善", description: "データベースクエリの最適化", priority: "low", status: "未着手", category: "開発", assignee: "佐藤花子", dueDate: "2025-12-20" },
+    { id: 6, title: "セキュリティ監査", description: "脆弱性スキャンと修正", priority: "high", status: "進行中", category: "開発", assignee: "鈴木一郎", dueDate: "2025-11-30" },
+    { id: 7, title: "ユーザーマニュアル更新", description: "新機能の使い方を追記", priority: "low", status: "完了", category: "ドキュメント", assignee: "田中太郎", dueDate: "2025-11-25" },
+    { id: 8, title: "結合テスト実施", description: "全モジュールの統合テスト", priority: "medium", status: "未着手", category: "テスト", assignee: "佐藤花子", dueDate: "2025-12-10" },
+  ])
+
+  // Inline Edit Table のサンプルデータ
+  const [employees, setEmployees] = useState([
+    { id: 1, name: "田中太郎", email: "tanaka@example.com", department: "開発", role: "エンジニア" },
+    { id: 2, name: "佐藤花子", email: "sato@example.com", department: "デザイン", role: "デザイナー" },
+    { id: 3, name: "鈴木一郎", email: "suzuki@example.com", department: "テスト", role: "QAエンジニア" },
+    { id: 4, name: "高橋美咲", email: "takahashi@example.com", department: "開発", role: "シニアエンジニア" },
+    { id: 5, name: "山田次郎", email: "yamada@example.com", department: "マーケティング", role: "マネージャー" },
+  ])
+
+  const employeeColumns = useMemo<EditableColumn<typeof employees[0]>[]>(() => [
+    { key: "name", label: "名前", editable: true, type: "text", width: "w-32" },
+    { key: "email", label: "メール", editable: true, type: "text", width: "w-48" },
+    { 
+      key: "department", 
+      label: "部署", 
+      editable: true, 
+      type: "lookup", 
+      width: "w-40",
+      options: [
+        { value: "開発", label: "開発部" },
+        { value: "デザイン", label: "デザイン部" },
+        { value: "テスト", label: "テスト部" },
+        { value: "マーケティング", label: "マーケティング部" },
+        { value: "営業", label: "営業部" },
+        { value: "人事", label: "人事部" },
+      ],
+      placeholder: "部署を選択",
+      searchPlaceholder: "部署を検索...",
+    },
+    { 
+      key: "role", 
+      label: "役職", 
+      editable: true, 
+      type: "select", 
+      width: "w-40",
+      options: [
+        { value: "エンジニア", label: "エンジニア" },
+        { value: "シニアエンジニア", label: "シニアエンジニア" },
+        { value: "デザイナー", label: "デザイナー" },
+        { value: "QAエンジニア", label: "QAエンジニア" },
+        { value: "マネージャー", label: "マネージャー" },
+        { value: "ディレクター", label: "ディレクター" },
+      ],
+      placeholder: "役職を選択",
+    },
+  ], [])
+
+  const handleEmployeeUpdate = (id: string | number, key: keyof typeof employees[0], value: unknown) => {
+    console.log(`[Update] ID: ${id}, Key: ${key}, Value:`, value)
+  }
+
+  const handleEmployeeSave = (id: string | number, updatedItem: Partial<typeof employees[0]>) => {
+    console.log(`[Save] ID: ${id}, Data:`, updatedItem)
+    setEmployees(prev => prev.map(emp => emp.id === id ? { ...emp, ...updatedItem } : emp))
+  }
+
+  const handleEmployeeDelete = (id: string | number) => {
+    console.log(`[Delete] ID: ${id}`)
+    setEmployees(prev => prev.filter(emp => emp.id !== id))
+  }
+
+  const handleEmployeeAdd = (newItem: Omit<typeof employees[0], "id">) => {
+    const newId = Math.max(...employees.map(e => e.id), 0) + 1
+    const data = { ...newItem, id: newId }
+    console.log(`[Add] Data:`, data)
+    setEmployees(prev => [...prev, data])
+  }
+
+  const handleEmployeeCsvImport = (data: typeof employees) => {
+    console.log(`[CSV Import]`, data)
+    setEmployees(data)
+  }
+
+  // 従業員用CSV列定義
+  const employeeCsvColumns = useMemo(() => [
+    { 
+      key: "name" as keyof typeof employees[0], 
+      label: "名前", 
+      required: true,
+      validate: (value: string) => value.trim().length > 0 || "名前は必須です"
+    },
+    { 
+      key: "email" as keyof typeof employees[0], 
+      label: "メール", 
+      required: true,
+      validate: (value: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(value) || "有効なメールアドレスを入力してください"
+      }
+    },
+    { key: "department" as keyof typeof employees[0], label: "部署", required: true },
+    { key: "role" as keyof typeof employees[0], label: "役職", required: true },
+  ], [])
+
+  const handleTaskCsvImport = (data: typeof sampleTasks) => {
+    console.log(`[Task CSV Import]`, data)
+    setSampleTasks(data)
+  }
+
+  // タスク用CSV列定義
+  const taskCsvColumns = useMemo(() => [
+    {
+      key: "title" as keyof typeof sampleTasks[0],
+      label: "タスク名",
+      required: true,
+      validate: (value: string) => value.trim().length > 0 || "タスク名は必須です"
+    },
+    {
+      key: "category" as keyof typeof sampleTasks[0],
+      label: "カテゴリ",
+      required: true,
+      validate: (value: string) => {
+        const validCategories = ["開発", "デザイン", "テスト", "ドキュメント"]
+        return validCategories.includes(value) || `カテゴリは ${validCategories.join(", ")} のいずれかである必要があります`
+      }
+    },
+    {
+      key: "status" as keyof typeof sampleTasks[0],
+      label: "ステータス",
+      required: true,
+      validate: (value: string) => {
+        const validStatuses = ["未着手", "進行中", "完了"]
+        return validStatuses.includes(value) || `ステータスは ${validStatuses.join(", ")} のいずれかである必要があります`
+      }
+    },
+    {
+      key: "assignee" as keyof typeof sampleTasks[0],
+      label: "担当者",
+      required: true
+    },
+    {
+      key: "progress" as keyof typeof sampleTasks[0],
+      label: "進捗",
+      required: true,
+      validate: (value: string) => {
+        const num = Number(value)
+        return (!isNaN(num) && num >= 0 && num <= 100) || "進捗は0から100の数値である必要があります"
+      },
+      transform: (value: string) => Number(value)
+    },
+    {
+      key: "dueDate" as keyof typeof sampleTasks[0],
+      label: "期日",
+      required: true
+    },
+  ], [])
+
+  const taskColumns = useMemo<TableColumn<typeof sampleTasks[0]>[]>(() => [
+    {
+      key: "title",
+      label: "タイトル",
+      sortable: true,
+      width: "250px",
+    },
+    {
+      key: "priority",
+      label: "優先度",
+      sortable: true,
+      width: "100px",
+      align: "center",
+      render: (task) => renderPriorityBadge(task.priority),
+    },
+    {
+      key: "status",
+      label: "ステータス",
+      sortable: true,
+      width: "120px",
+      align: "center",
+      render: (task) => renderStatusBadge(task.status),
+    },
+    {
+      key: "category",
+      label: "カテゴリ",
+      sortable: true,
+      width: "120px",
+    },
+    {
+      key: "assignee",
+      label: "担当者",
+      sortable: true,
+      width: "120px",
+    },
+    {
+      key: "dueDate",
+      label: "期日",
+      sortable: true,
+      width: "120px",
+    },
+  ], [])
+
+  // タスクテーブルのフィルター定義
+  const taskFilters = useMemo(() => [
+    {
+      key: "category" as keyof typeof sampleTasks[0],
+      label: "カテゴリで絞り込み",
+      placeholder: "カテゴリを選択",
+      searchPlaceholder: "カテゴリを検索...",
+      options: [
+        { value: "開発", label: "開発" },
+        { value: "デザイン", label: "デザイン" },
+        { value: "テスト", label: "テスト" },
+        { value: "ドキュメント", label: "ドキュメント" },
+      ],
+    },
+    {
+      key: "assignee" as keyof typeof sampleTasks[0],
+      label: "担当者で絞り込み",
+      placeholder: "担当者を選択",
+      searchPlaceholder: "担当者を検索...",
+      options: [
+        { value: "田中太郎", label: "田中太郎" },
+        { value: "佐藤花子", label: "佐藤花子" },
+        { value: "鈴木一郎", label: "鈴木一郎" },
+      ],
+    },
+  ], [])
 
   const modules = useMemo(() => data?.modules ?? [], [data?.modules])
   const certifications = useMemo(() => data?.certifications ?? [], [data?.certifications])
@@ -209,6 +447,12 @@ export default function DesignShowcasePage() {
                 <a href="#stats" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
                   統計カード
                 </a>
+                <a href="#table" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  リストテーブル
+                </a>
+                <a href="#inline-edit" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
+                  インライン編集テーブル
+                </a>
                 <a href="#gallery" className="block text-sm text-muted-foreground hover:text-white hover:bg-accent rounded-md px-3 py-2 transition-colors">
                   検索・フィルター & ギャラリー
                 </a>
@@ -239,16 +483,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="recharts と shadcn/ui の ChartContainer を使って、[あなたのデータ]を BarChart、PieChart、LineChart で可視化するダッシュボードを作成して。ChartTooltip でデータ詳細を表示"
+                code="ChartDashboard コンポーネントを使って、[あなたのデータ]を可視化するダッシュボードを作成して"
                 language="text"
-                description="複数のグラフでデータを多角的に分析したい場合に使用します"
-              />
-              <CodeBlock
-                code="Card コンポーネント内に recharts のグラフを配置し、2列グリッドレイアウトで表示。各グラフに ChartTooltipContent を追加してカスタムツールチップを実装"
-                language="text"
-                description="データ分析ダッシュボードを構築する際に活用できます"
+                description="複数のグラフでデータを多角的に分析できます"
               />
             </div>
           </details>
@@ -268,16 +507,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="shadcn/ui の Card コンポーネントを使って、[あなたのデータ項目]のアイコン、タイトル、大きな数値、説明文を含む統計カードを4列のグリッドで作成して"
+                code="StatsCards コンポーネントを使って、[あなたのデータ]の統計情報を表示して"
                 language="text"
-                description="重要な指標を視覚的に表示したい場合に使用します"
-              />
-              <CodeBlock
-                code="CardHeader と CardContent コンポーネントを使って、[あなたのAPI]から取得した[データ種別]の統計情報を表示するサマリーカードを作成"
-                language="text"
-                description="ダッシュボードのサマリーセクションを構築する際に活用できます"
+                description="重要な指標を視覚的に表示できます"
               />
             </div>
           </details>
@@ -315,6 +549,139 @@ export default function DesignShowcasePage() {
         columns={4}
       />
 
+      {/* デザインテンプレート: リストテーブル */}
+      <div className="space-y-3" id="table">
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-foreground">📋 リストテーブル</h2>
+          <p className="text-sm text-muted-foreground">
+            検索、フィルター、ソート、ページネーション機能を備えたデータテーブル
+          </p>
+          <details className="text-sm">
+            <summary className="cursor-pointer font-medium text-primary hover:underline">
+              GitHub Copilot への指示例
+            </summary>
+            <div className="mt-2">
+              <CodeBlock
+                code="ListTable コンポーネントを使って、[あなたのデータ]を表示するテーブルを作成して"
+                language="text"
+                description="検索、フィルター、ソート、ページネーション、CSV入出力機能を備えたテーブルです"
+              />
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <ListTable
+        data={sampleTasks}
+        columns={taskColumns}
+        title="タスク管理テーブル"
+        description="プロジェクトのタスクを一覧表示し、検索・フィルター・ソート機能で効率的に管理（行クリックで詳細表示）"
+        searchable={true}
+        searchPlaceholder="タスクを検索..."
+        searchKeys={["title", "description", "assignee"]}
+        filters={taskFilters}
+        itemsPerPage={5}
+        emptyMessage="タスクが見つかりませんでした"
+        enableCsv={true}
+        csvColumns={taskCsvColumns}
+        csvFileName="tasks"
+        onCsvImport={handleTaskCsvImport}
+        formTitle="タスク詳細"
+        formDescription="タスクの詳細情報を確認できます"
+        renderForm={(task) => {
+          if (!task) return null
+          return (
+            <div className="space-y-6">
+              <FormSection title="基本情報">
+                <FormColumns columns={2}>
+                  <div className="space-y-2">
+                    <Label>タスク名</Label>
+                    <Input value={task.title} readOnly autoFocus={false} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>担当者</Label>
+                    <Input value={task.assignee} readOnly autoFocus={false} />
+                  </div>
+                </FormColumns>
+                <div className="space-y-2">
+                  <Label>説明</Label>
+                  <Textarea value={task.description} readOnly rows={3} />
+                </div>
+              </FormSection>
+
+              <FormSection title="ステータス">
+                <FormColumns columns={3}>
+                  <div className="space-y-2">
+                    <Label>優先度</Label>
+                    <div className="pt-2">
+                      {renderPriorityBadge(task.priority)}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>ステータス</Label>
+                    <div className="pt-2">
+                      {renderStatusBadge(task.status)}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>カテゴリ</Label>
+                    <div className="pt-2">
+                      <Badge variant="outline">{task.category}</Badge>
+                    </div>
+                  </div>
+                </FormColumns>
+              </FormSection>
+
+              <FormSection title="スケジュール">
+                <div className="space-y-2">
+                  <Label>期日</Label>
+                  <Input value={task.dueDate} readOnly autoFocus={false} />
+                </div>
+              </FormSection>
+            </div>
+          )
+        }}
+      />
+
+      {/* デザインテンプレート: インライン編集テーブル */}
+      <div className="space-y-3" id="inline-edit">
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-foreground">✏️ インライン編集テーブル</h2>
+          <p className="text-sm text-muted-foreground">
+            行単位で直接編集、追加、削除ができるインタラクティブなテーブル
+          </p>
+          <details className="text-sm">
+            <summary className="cursor-pointer font-medium text-primary hover:underline">
+              GitHub Copilot への指示例
+            </summary>
+            <div className="mt-2">
+              <CodeBlock
+                code="InlineEditTable コンポーネントを使って、[あなたのデータ]の編集可能なテーブルを作成して"
+                language="text"
+                description="直接編集、追加、削除、CSV入出力ができるテーブルです"
+              />
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <InlineEditTable
+        data={employees}
+        columns={employeeColumns}
+        title="従業員一覧"
+        description="クリックで直接編集、新規追加、削除ができるテーブル"
+        onUpdate={handleEmployeeUpdate}
+        onSave={handleEmployeeSave}
+        onDelete={handleEmployeeDelete}
+        onAdd={handleEmployeeAdd}
+        addButtonLabel="新しい従業員を追加"
+        emptyMessage="従業員データがありません"
+        enableCsv={true}
+        csvColumns={employeeCsvColumns}
+        csvFileName="employees"
+        onCsvImport={handleEmployeeCsvImport}
+      />
+
       {/* デザインテンプレート: カード */}
       {!isLoading && featuredCertifications.length > 0 && (
         <div className="space-y-3">
@@ -327,16 +694,11 @@ export default function DesignShowcasePage() {
               <summary className="cursor-pointer font-medium text-primary hover:underline">
                 GitHub Copilot への指示例
               </summary>
-              <div className="mt-2 space-y-2">
+              <div className="mt-2">
                 <CodeBlock
-                  code="Card、CardHeader、CardContent、Badge、Button コンポーネントを使って、[あなたのデータ項目]のタイトル、説明、[カテゴリ]バッジ、アクションボタンを含むカードを3列グリッドで作成して"
+                  code="Card コンポーネントを使って、[あなたのデータ]をカード形式で表示して"
                   language="text"
-                  description="製品や認定資格などの一覧表示に適しています"
-                />
-                <CodeBlock
-                  code="Badge コンポーネントで[属性]タグを表示し、Button コンポーネントで詳細ページへのリンクを持つ[あなたのデータ名]カードギャラリーを作成"
-                  language="text"
-                  description="詳細情報へのリンク付きカードギャラリーを実装する際に使用します"
+                  description="タイトル、説明、バッジ、アクションボタンを含むカードレイアウトです"
                 />
               </div>
             </details>
@@ -389,16 +751,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="Input コンポーネントで検索フィールドを作成し、Combobox コンポーネントで[フィルター項目数]つのドロップダウンフィルターを含むフィルターセクションを作成。各 Combobox は検索可能に"
+                code="SearchFilterGallery コンポーネントを使って、[あなたのデータ]を検索・フィルター可能なギャラリーで表示して"
                 language="text"
-                description="大量のデータから条件に合う項目を絞り込む機能が必要な場合に使用します"
-              />
-              <CodeBlock
-                code="Card コンポーネントを使って[あなたのデータ]のタイトル、概要、Badge コンポーネントで属性を表示し、Button コンポーネントでアクションを含むカードを3列グリッドで表示。ページネーション付き"
-                language="text"
-                description="検索・フィルター機能と連携したカードギャラリーを実装する際に活用できます"
+                description="検索バー、複数のフィルター、カードギャラリー、ページネーション機能を備えています"
               />
             </div>
           </details>
@@ -452,16 +809,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="@dnd-kit/core と useSortable フックを使って、Badge コンポーネントで[属性]を表示する[あなたのアイテム]をドラッグ&ドロップで並び替えられるリストを作成して"
+                code="TaskPriorityList コンポーネントを使って、[あなたのタスク]をドラッグ&ドロップで並び替えられるリストを作成して"
                 language="text"
-                description="タスクやアイテムの優先順位を直感的に変更できる機能が必要な場合に使用します"
-              />
-              <CodeBlock
-                code="SortableContext と verticalListSortingStrategy を使って優先度付き[アイテム名]リスト。各[アイテム]に GripVertical アイコンと Badge コンポーネントで[属性]バッジを表示。ドラッグで順序変更可能に"
-                language="text"
-                description="インタラクティブな並び替え機能を持つリストコンポーネントを実装する際に活用できます"
+                description="タスクやアイテムの優先順位を直感的に変更できます"
               />
             </div>
           </details>
@@ -481,16 +833,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="@dnd-kit/core の DndContext と SortableContext を使って、Card と Badge コンポーネントで表示する[あなたのタスク]を[ステータス1]、[ステータス2]、[ステータス3]の3列に分けたカンバンボードを作成して"
+                code="KanbanBoard コンポーネントを使って、[あなたのタスク]をカンバンボードで表示して"
                 language="text"
-                description="タスクの進捗状況を視覚的に管理したい場合に使用します"
-              />
-              <CodeBlock
-                code="useSortable フックと DragOverlay を使ってドラッグ&ドロップ対応のカンバンビュー。各カラムに Card コンポーネントでタスクカードを表示し、GripVertical アイコンでドラッグ可能に。カラム間でタスクを移動できるように"
-                language="text"
-                description="アジャイル開発やタスク管理ツールを実装する際に活用できます"
+                description="タスクをドラッグ&ドロップでステータス間を移動できます"
               />
             </div>
           </details>
@@ -510,16 +857,11 @@ export default function DesignShowcasePage() {
             <summary className="cursor-pointer font-medium text-primary hover:underline">
               GitHub Copilot への指示例
             </summary>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2">
               <CodeBlock
-                code="@dnd-kit/core を使って[あなたのタスク]をドラッグで移動できるガントチャートを作成。Card コンポーネントで各タスクを表示し、開始日と終了日を視覚的に表示"
+                code="GanttChart コンポーネントを使って、[あなたのタスク]をガントチャートで表示して"
                 language="text"
-                description="プロジェクトのスケジュールやタイムラインを視覚化したい場合に使用します"
-              />
-              <CodeBlock
-                code="DndContext と useSortable フックを使ったガントチャートコンポーネント。各タスクバーの両端にハンドルを配置し、ドラッグで[期間]を変更できるように。Badge コンポーネントで優先度を表示"
-                language="text"
-                description="インタラクティブなプロジェクト管理ツールを実装する際に活用できます"
+                description="タスクをドラッグで移動、ハンドルで期間変更できます"
               />
             </div>
           </details>

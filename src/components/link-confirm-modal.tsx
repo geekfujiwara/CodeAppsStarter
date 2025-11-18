@@ -40,7 +40,6 @@ export function LinkConfirmModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className="p-0 gap-0 max-h-[90vh] flex flex-col max-w-2xl"
-        onPointerDownOutside={(e) => e.preventDefault()}
       >
         {/* ヘッダー */}
         <DialogHeader className="px-6 py-4 border-b border-border bg-primary/10 flex-shrink-0">
@@ -71,6 +70,7 @@ export function LinkConfirmModal({
               <Input
                 value={title}
                 readOnly
+                autoFocus={false}
                 className="bg-muted border-border"
               />
             </div>
@@ -84,6 +84,7 @@ export function LinkConfirmModal({
               <Input
                 value={url}
                 readOnly
+                autoFocus={false}
                 className="bg-muted border-border font-mono text-xs"
               />
             </div>
