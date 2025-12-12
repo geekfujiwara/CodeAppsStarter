@@ -111,19 +111,19 @@ function TreeItem({
         onDragOver={(e) => onDragOver(e, node.id)}
         onDragLeave={onDragLeave}
         onDrop={(e) => onDrop(e, node.id)}
-        className={`flex items-center gap-2 py-2 px-2 hover:bg-gray-50 rounded group cursor-move ${
-          isDragTarget ? "ring-2 ring-blue-400 ring-dashed bg-blue-50" : ""
+        className={`flex items-center gap-2 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded group cursor-move ${
+          isDragTarget ? "ring-2 ring-blue-400 ring-dashed bg-blue-50 dark:bg-blue-950" : ""
         }`}
       >
         {/* ドラッグハンドル */}
         <div className="flex-shrink-0 cursor-grab active:cursor-grabbing">
-          <GripVertical className="h-4 w-4 text-gray-400" />
+          <GripVertical className="h-4 w-4 text-gray-400 dark:text-gray-500" />
         </div>
 
         {/* 展開/折りたたみボタン */}
         <button
           onClick={() => onToggle(node.id)}
-          className="p-0.5 hover:bg-gray-200 rounded flex-shrink-0"
+          className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded flex-shrink-0"
           disabled={node.children.length === 0}
         >
           {node.children.length > 0 ? (
@@ -154,7 +154,7 @@ function TreeItem({
           ) : (
             <div
               onClick={() => startEdit("name", node.name)}
-              className="font-medium truncate cursor-pointer hover:text-blue-600"
+              className="font-medium truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             >
               {node.name}
             </div>
@@ -175,7 +175,7 @@ function TreeItem({
           ) : (
             <div
               onClick={() => startEdit("partNumber", node.partNumber)}
-              className="text-sm text-gray-600 truncate cursor-pointer hover:text-blue-600"
+              className="text-sm text-gray-600 dark:text-gray-400 truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             >
               {node.partNumber}
             </div>
@@ -198,12 +198,12 @@ function TreeItem({
           ) : (
             <div
               onClick={() => startEdit("quantity", node.quantity)}
-              className="text-sm text-right flex-1 cursor-pointer hover:text-blue-600"
+              className="text-sm text-right flex-1 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             >
               {node.quantity}
             </div>
           )}
-          <span className="text-xs text-gray-500 flex-shrink-0">{node.unit}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{node.unit}</span>
         </div>
 
         {/* タイプバッジ */}
@@ -223,7 +223,7 @@ function TreeItem({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950"
             onClick={() => onDelete(node.id)}
             title="削除"
           >
@@ -246,18 +246,46 @@ function OrgChartView({
   onAddChild: (id: string) => void
 }) {
   const mermaidRef = useRef<HTMLDivElement>(null)
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  // テーマ変更を監視
+  useEffect(() => {
+    const updateTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      setTheme(isDark ? 'dark' : 'light')
+    }
+    
+    updateTheme()
+    
+    // MutationObserverでテーマ変更を監視
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+    
+    return () => observer.disconnect()
+  }, [])
 
   // Mermaidの初期化
   useEffect(() => {
+    const isDark = theme === 'dark'
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'default',
+      theme: isDark ? 'dark' : 'default',
       flowchart: {
         useMaxWidth: true,
         htmlLabels: true,
         curve: 'basis',
       },
-      themeVariables: {
+      themeVariables: isDark ? {
+        primaryColor: '#1e3a5f',
+        primaryTextColor: '#93c5fd',
+        primaryBorderColor: '#3b82f6',
+        lineColor: '#60a5fa',
+        secondaryColor: '#1a3d2e',
+        tertiaryColor: '#4a2c1c',
+      } : {
         primaryColor: '#dbeafe',
         primaryTextColor: '#1e40af',
         primaryBorderColor: '#93c5fd',
@@ -266,7 +294,7 @@ function OrgChartView({
         tertiaryColor: '#fed7aa',
       },
     })
-  }, [])
+  }, [theme])
 
   // TreeNodeからMermaid記法への変換
   const convertToMermaid = (nodes: TreeNode[]): string => {
@@ -319,16 +347,16 @@ function OrgChartView({
           mermaidRef.current.innerHTML = svg
         } catch (error) {
           console.error('Mermaid rendering error:', error)
-          mermaidRef.current.innerHTML = `<div class="text-red-600 p-4">図の描画に失敗しました</div>`
+          mermaidRef.current.innerHTML = `<div class="text-red-600 dark:text-red-400 p-4">図の描画に失敗しました</div>`
         }
       }
     }
     
     renderDiagram()
-  }, [data])
+  }, [data, theme])
 
   return (
-    <div className="w-full bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg p-8 overflow-auto">
+    <div className="w-full bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 rounded-lg p-8 overflow-auto">
       <div ref={mermaidRef} className="flex justify-center min-h-[400px]" />
     </div>
   )
@@ -719,10 +747,10 @@ export function TreeStructure() {
         <>
           {/* ローディングオーバーレイ */}
           {isProcessing && (
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+            <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
               <div className="flex flex-col items-center gap-3">
-                <div className="h-12 w-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                <p className="text-sm text-gray-600 font-medium">階層を変更中...</p>
+                <div className="h-12 w-12 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin"></div>
+                <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">階層を変更中...</p>
               </div>
             </div>
           )}
@@ -732,7 +760,7 @@ export function TreeStructure() {
               <h3 className="text-lg font-semibold mb-1">
                 {viewMode === "tree" ? "BOM (部品表) - ツリー構造" : "階層ビュー"}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 クリックして編集 • アイテムをドラッグして階層変更 • 点線=ドロップ可能
               </p>
             </div>
@@ -804,7 +832,7 @@ export function TreeStructure() {
           </div>
 
           {treeData.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               ツリーが空です。「ルート追加」ボタンでアイテムを追加してください。
             </div>
           )}

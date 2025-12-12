@@ -28,16 +28,9 @@ const withSuspense = (Component: React.LazyExoticComponent<() => React.JSX.Eleme
 
 // IMPORTANT: Do not remove or modify the code below!
 // Normalize basename when hosted in Power Apps
-let BASENAME = "/"
-try {
-  const url = new URL(".", location.href)
-  BASENAME = url.pathname
-  if (location.pathname.endsWith("/index.html")) {
-    history.replaceState(null, "", BASENAME + location.search + location.hash);
-  }
-} catch {
-  // Fallback to root if URL parsing fails
-  BASENAME = "/"
+const BASENAME = new URL(".", location.href).pathname
+if (location.pathname.endsWith("/index.html")) {
+  history.replaceState(null, "", BASENAME + location.search + location.hash);
 }
 
 export const router = createBrowserRouter([

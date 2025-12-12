@@ -72,12 +72,12 @@ export function FullscreenWrapper({
       />
 
       {/* 全画面コンテンツ */}
-      <div className={`fixed top-4 left-4 right-4 bottom-4 z-[110] shadow-2xl border rounded-lg p-4 bg-white flex flex-col ${className}`}>
+      <div className={`fixed top-4 left-4 right-4 bottom-4 z-[110] shadow-2xl border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900 flex flex-col ${className}`}>
         {showHeader && (
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <div>
-              {title && <h3 className="text-lg font-semibold">{title}</h3>}
-              {description && <p className="text-sm text-gray-600">{description}</p>}
+              {title && <h3 className="text-lg font-semibold dark:text-white">{title}</h3>}
+              {description && <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>}
             </div>
             <div className="flex items-center gap-2">
               {headerContent}
@@ -101,12 +101,12 @@ export function FullscreenWrapper({
       {isFullscreen && typeof document !== "undefined" && createPortal(fullscreenContent, document.body)}
       
       {!isFullscreen && (
-        <div className={`w-full border rounded-lg p-4 bg-white relative ${className}`}>
+        <div className={`w-full border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900 relative ${className}`}>
           {showHeader && (
             <div className="flex items-center justify-between mb-4">
               <div>
-                {title && <h3 className="text-lg font-semibold">{title}</h3>}
-                {description && <p className="text-sm text-gray-600">{description}</p>}
+                {title && <h3 className="text-lg font-semibold dark:text-white">{title}</h3>}
+                {description && <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>}
               </div>
               <div className="flex items-center gap-2">
                 {headerContent}
