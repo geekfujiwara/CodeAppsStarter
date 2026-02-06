@@ -97,12 +97,13 @@ export async function getTableMetadata(
 
   // 注: 実際のメタデータ取得は pac CLI または Dataverse Web API を使用
   // ここでは基本的な構造を返すプレースホルダー
+  // カスタムテーブルは通常 'new_' や組織の発行者プレフィックスで始まる
   const metadata: TableMetadata = {
     logicalName: tableName,
     displayName: tableName,
     description: `${tableName} テーブル`,
     primaryIdAttribute: `${tableName}id`,
-    isCustomEntity: tableName.startsWith('cr_'),
+    isCustomEntity: tableName.includes('_'), // プレフィックス付きはカスタムテーブルの可能性が高い
     attributes: []
   };
 
@@ -236,12 +237,11 @@ Dataverse テーブル「${tableName}」をデータソースとして追加す�
    ${this.generateAddDataSourceCommand(tableName)}
 
 3. 生成されたファイルを確認:
-   - /generated/models/${tableName}Model.ts
-   - /generated/services/${tableName}Service.ts
+   generated ディレクトリ内にモデルとサービスファイルが作成されます
+   (具体的なファイル名は pac CLI の実装に依存します)
 
 4. アプリケーションで使用:
-   import { ${tableName}Service } from './generated/services/${tableName}Service';
-   const records = await ${tableName}Service.getAll();
+   生成されたサービスをインポートして使用します
 `;
   }
 }

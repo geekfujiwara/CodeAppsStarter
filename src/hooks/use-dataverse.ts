@@ -11,6 +11,9 @@
  *   top: 10
  * });
  * ```
+ * 
+ * 注意: クライアントインスタンスは React Context で提供することを推奨します。
+ * 現在の実装はシンプルな例として提供されています。
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -18,10 +21,14 @@ import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
 import { createDataverseClient, type DataverseSchema, type QueryOptions } from '@/lib/dataverse-client';
 
 /**
- * Dataverse クライアントのグローバルインスタンス
- * 実際のアプリケーションでは、Context API や Provider パターンで提供することを推奨
+ * Dataverse クライアントのシングルトンインスタンス
+ * 
+ * 注: 実際のアプリケーションでは、以下のような方法での提供を推奨します:
+ * - React Context API を使用した Provider パターン
+ * - 依存性注入 (DI) パターン
+ * - アプリケーション初期化時の設定
  */
-let dataverseClient: ReturnType<typeof createDataverseClient> | null = null;
+let clientInstance: ReturnType<typeof createDataverseClient> | null = null;
 
 /**
  * Dataverse クライアントを初期化
@@ -29,19 +36,19 @@ let dataverseClient: ReturnType<typeof createDataverseClient> | null = null;
  * @param schema Dataverse スキーマ定義
  */
 export function initializeDataverseClient(schema: DataverseSchema): void {
-  dataverseClient = createDataverseClient(schema);
+  clientInstance = createDataverseClient(schema);
 }
 
 /**
  * Dataverse クライアントを取得
  */
 function getDataverseClient() {
-  if (!dataverseClient) {
+  if (!clientInstance) {
     throw new Error(
       'Dataverse クライアントが初期化されていません。initializeDataverseClient() を呼び出してください。'
     );
   }
-  return dataverseClient;
+  return clientInstance;
 }
 
 /**

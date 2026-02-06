@@ -20,9 +20,7 @@ import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import {
   SAMPLE_TABLE_SCHEMAS,
-  PacCommandHelper,
-  buildDataverseSchema,
-  type TableSchemaInfo
+  PacCommandHelper
 } from '../src/lib/dataverse-metadata';
 
 // コマンドライン引数を取得
@@ -186,9 +184,8 @@ function generateCommands(tableName: string): void {
   console.log('# データソースとして追加');
   console.log(PacCommandHelper.generateAddDataSourceCommand(tableName));
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('このコマンドを実行すると、以下のファイルが生成されます:');
-  console.log(`  • generated/models/${tableName}Model.ts`);
-  console.log(`  • generated/services/${tableName}Service.ts\n`);
+  console.log('このコマンドを実行すると、generated ディレクトリにファイルが生成されます。');
+  console.log('具体的なファイル名は pac CLI の実装に依存します。\n');
 }
 
 /**
