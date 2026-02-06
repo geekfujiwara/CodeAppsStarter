@@ -147,9 +147,7 @@ npm run dev
 ### 実装済みの機能
 
 - **サンプル実装** - Learn API を活用したギャラリー、フォーム、フィルター、カード表示の実装例
-- **Dataverse 接続** - @microsoft/power-apps SDK を使用した Dataverse への接続とデータ操作
 - **API 連携** - React Query を使用したデータフェッチとキャッシング
-- **CLI ツール** - Dataverse 操作用のコマンドラインツール
 - **ダークモード対応** - システム設定に合わせた自動切り替え
 - **レスポンシブデザイン** - モバイル、タブレット、デスクトップに対応
 - **サイドバーナビゲーション** - コラップス可能なナビゲーション
@@ -163,38 +161,6 @@ npm run dev
 - 人気モジュールのハイライト表示
 - フォーム実装サンプル
 - カード表示サンプル
-
-### Dataverse 接続
-
-- **XML 非依存**: 公式 @microsoft/power-apps SDK を使用
-- **型安全**: TypeScript による完全な型定義
-- **CLI ツール**: コマンドラインからの操作をサポート
-- **React フック**: useDataverseRecords, useDataverseCreate などのカスタムフック
-- **詳細ドキュメント**: [docs/dataverse-design.md](docs/dataverse-design.md) を参照
-
-#### Dataverse CLI コマンド
-
-```bash
-# ヘルプを表示
-npm run dataverse:help
-
-# 接続テスト
-npm run dataverse:test
-
-# テーブルメタデータ表示
-npm run dataverse:metadata account
-
-# pac CLI ガイド表示
-npm run dataverse:guide contact
-
-# サンプルテーブル一覧
-npm run dataverse:list
-
-# pac CLI コマンド生成
-npm run dataverse:commands account
-```
-
-詳細は [docs/dataverse-design.md](docs/dataverse-design.md) を参照してください。
 
 ---
 
