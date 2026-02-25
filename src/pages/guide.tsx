@@ -98,7 +98,7 @@ export default function GuidePage() {
                 <li>• <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub Copilot 拡張機能</a></li>
                 <li>• <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Node.js (最新LTS版)</a></li>
                 <li>• <a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Git</a></li>
-                <li>• <a href="https://aka.ms/PowerPlatformCLI" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Power Platform CLI (pac CLI)</a></li>
+                <li>• <a href="https://www.npmjs.com/package/@microsoft/power-apps" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@microsoft/power-apps (npm CLI)</a></li>
               </ul>
             </div>
 
@@ -200,21 +200,21 @@ export default function GuidePage() {
               <p className="text-sm text-muted-foreground">
                 最初に、Power Apps 環境への接続情報を設定します。この手順は初回のみ実行します。
               </p>
-              <CodeBlock code="pac code init --environment <環境ID> --displayname <アプリ名>" />
+              <CodeBlock code={`npx power-apps init --displayName "<アプリ名>" --environmentId <環境ID>`} />
               <div className="space-y-3">
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1">パラメータ説明:</p>
                   <ul className="text-xs text-muted-foreground space-y-2 ml-4">
                     <li>
-                      <strong>環境ID</strong>: デプロイ先のPower Apps環境の識別子
+                      <strong>--displayName</strong>: Power Appsに表示されるアプリケーション名
                       <div className="mt-1 pl-4 text-xs">
-                        <span className="text-primary">📍 取得方法:</span> <a href="https://make.powerapps.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">make.powerapps.com</a> にアクセスし、右上の環境メニューから対象の環境を選択。設定(⚙️)アイコン &gt; セッション詳細 &gt; インスタンス URLから環境IDを確認できます
+                        <span className="text-primary">💡 ヒント:</span> 新しくアプリにつける名前を入力します。日本語でも問題ありません(例: 「営業管理アプリ」「顧客データベース」)
                       </div>
                     </li>
                     <li>
-                      <strong>アプリ名</strong>: Power Appsに表示されるアプリケーション名
+                      <strong>--environmentId</strong>: デプロイ先のPower Apps環境の識別子
                       <div className="mt-1 pl-4 text-xs">
-                        <span className="text-primary">💡 ヒント:</span> 新しくアプリにつける名前を入力します。日本語でも問題ありません(例: 「営業管理アプリ」「顧客データベース」)
+                        <span className="text-primary">📍 取得方法:</span> <a href="https://make.powerapps.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">make.powerapps.com</a> にアクセスし、右上の環境メニューから対象の環境を選択。設定(⚙️)アイコン &gt; セッション詳細 &gt; インスタンス URLから環境IDを確認できます
                       </div>
                     </li>
                   </ul>
@@ -253,7 +253,7 @@ export default function GuidePage() {
               </p>
               
               {/* デプロイの実行 */}
-              <CodeBlock code={`npm run build\npac code push`} />
+              <CodeBlock code={`npm run build\nnpx power-apps push`} />
 
               <div className="space-y-2">
                 <h5 className="font-semibold text-sm">デプロイ後の確認</h5>
@@ -375,7 +375,7 @@ export default function GuidePage() {
                     <p className="text-sm text-muted-foreground mb-2">
                       完成したアプリをビルドして Power Apps 環境にデプロイします
                     </p>
-                    <CodeBlock code={`npm run build\npac code push`} />
+                    <CodeBlock code={`npm run build\nnpx power-apps push`} />
                   </div>
                 </div>
               </div>

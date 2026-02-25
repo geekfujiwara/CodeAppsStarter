@@ -135,7 +135,7 @@ npm run dev
 アプリを起動後、「このテンプレートの使い方」ページにアクセスして、以下の情報を確認できます:
 
 1. **開発環境のセットアップ** - 必要なツールとセットアップコマンド
-2. **Power Apps へのデプロイ準備** - `pac code init` コマンドの使い方
+2. **Power Apps へのデプロイ準備** - `npx power-apps init` コマンドの使い方
 3. **開発標準の活用方法** - GitHub Copilot との連携方法
 
 詳細な開発標準については、[CodeAppsDevelopmentStandard](https://github.com/geekfujiwara/CodeAppsDevelopmentStandard) リポジトリを参照してください。
