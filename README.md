@@ -106,16 +106,29 @@ https://github.com/user-attachments/assets/d9cef0e8-91ca-41ea-b40f-5f342dd98a13
 
 ### インストール
 
-```PowerShell
-# リポジトリをクローン
-git clone https://github.com/geekfujiwara/CodeAppsStarter.git
-cd CodeAppsStarter
-```
+このリポジトリは **Template repository** です。clone ではなくテンプレートから自分のリポジトリを生成します。
 
 ```PowerShell
-# 依存関係をインストール
-npm install
+# テンプレートから新しいテーマのリポジトリを生成して clone（private 推奨）
+gh repo create <your-account>/<your-theme-repo> --template geekfujiwara/CodeAppsStarter --private --clone
+cd <your-theme-repo>
 ```
+
+> リモートを作らずローカルだけで試す場合: `npx degit geekfujiwara/CodeAppsStarter <フォルダ名>`
+
+```PowerShell
+# 依存関係をインストール + 開発標準（エージェント・スキル）を同期
+npm install
+npm run setup
+```
+
+`npm run setup` は [CodeAppsDevelopmentStandard](https://github.com/geekfujiwara/CodeAppsDevelopmentStandard) から
+`.github/`（GeekPowerCode エージェント・スキル一式。認証ヘルパー・日本語パッチ・地図 SVG 等のスキル所有アセットを含む）と
+`scripts/`（共通ツール）・`.env.example` をこのプロジェクトに同期し、続けて環境チェック（bootstrap）を実行します。
+
+- 標準の更新を取り込むときは `npm run sync-standards` を再実行します（テーマ固有のコードには触れません）
+- リファレンス実装サンプルは同期されません（必要なら `node scripts/sync-standards.mjs --with-samples`）
+- `.power/` / `src/generated/` / `power.config.json` は同期対象外です。**`pac code init` / `pac code add-data-source` で Power Apps SDK に生成させてください**
 
 ```PowerShell
 # 開発サーバーを起動
