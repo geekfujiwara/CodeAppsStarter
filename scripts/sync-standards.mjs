@@ -11,11 +11,10 @@
  *
  * 同期対象（標準リポ → このプロジェクト・同じ相対パスにコピー）:
  *   .github/             … エージェント・スキル（samples/ は除外）
+ *                          ※ auth_helper.py / patch-nameutils.cjs / 地図 SVG など
+ *                            「スキル所有アセット」は .github/skills/ 配下にあるため自動的に同期される
  *   .claude/             … Claude Code エージェント定義（存在する場合）
- *   auth_helper.py       … MSAL 認証ヘルパー
- *   patch-nameutils.cjs  … 日本語 DisplayName パッチ
- *   public/maps/         … japan-map 共有 SVG
- *   scripts/bootstrap.mjs / scripts/pre-deploy-check.mjs … 標準スクリプト
+ *   scripts/bootstrap.mjs / scripts/pre-deploy-check.mjs … プロジェクト共通ツール
  *   .env.example         … 環境変数テンプレート（既存なら上書きしない）
  *   work/input/          … spec-to-markdown の入力ディレクトリ（空で作成）
  *
@@ -83,10 +82,8 @@ sync(`.github/ ${withSamples ? "（samples 含む）" : "（samples 除外）"}`
 // .claude/
 sync(".claude/", () => copyTree(path.join(tmp, ".claude"), path.join(projectRoot, ".claude")));
 
-// 共有ファイル（標準リポと同じ相対パスにコピー）
-sync("auth_helper.py", () => copyFile("auth_helper.py"));
-sync("patch-nameutils.cjs", () => copyFile("patch-nameutils.cjs"));
-sync("public/maps/", () => copyTree(path.join(tmp, "public", "maps"), path.join(projectRoot, "public", "maps")));
+// プロジェクト共通ツール・環境テンプレート（標準リポと同じ相対パスにコピー）
+// ※ auth_helper.py / patch-nameutils.cjs / 地図 SVG は .github/ 配下にあるため上の .github 同期で配布済み
 sync("scripts/bootstrap.mjs", () => copyFile(path.join("scripts", "bootstrap.mjs")));
 sync("scripts/pre-deploy-check.mjs", () => copyFile(path.join("scripts", "pre-deploy-check.mjs")));
 sync(".env.example（なければ）", () => copyFile(".env.example", { skipIfExists: true }));
