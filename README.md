@@ -123,8 +123,8 @@ npm run setup
 ```
 
 `npm run setup` は [CodeAppsDevelopmentStandard](https://github.com/geekfujiwara/CodeAppsDevelopmentStandard) から
-`.github/`（GeekPowerCode エージェント・スキル一式）と共有ファイル（`auth_helper.py` / `public/maps/` 等）を
-このプロジェクトに同期し、続けて環境チェック（bootstrap）を実行します。
+`.github/`（GeekPowerCode エージェント・スキル一式。認証ヘルパー・日本語パッチ・地図 SVG 等のスキル所有アセットを含む）と
+`scripts/`（共通ツール）・`.env.example` をこのプロジェクトに同期し、続けて環境チェック（bootstrap）を実行します。
 
 - 標準の更新を取り込むときは `npm run sync-standards` を再実行します（テーマ固有のコードには触れません）
 - リファレンス実装サンプルは同期されません（必要なら `node scripts/sync-standards.mjs --with-samples`）
